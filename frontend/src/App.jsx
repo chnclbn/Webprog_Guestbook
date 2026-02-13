@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { guestbookApi } from './api';
-import { Trash2, Edit3, Send, User, MessageSquare } from 'lucide-react'; // Added Edit3
+import { Trash2, Edit3, Send, User, MessageSquare } from 'lucide-react'; 
 
 function App() {
   const [entries, setEntries] = useState([]);
@@ -36,8 +36,6 @@ function App() {
       fetchEntries();
     }
   };
-
-  // Logic to update an existing message
   const handleUpdate = async (id, currentMessage) => {
     const newMessage = prompt("Edit your message:", currentMessage);
     if (newMessage && newMessage !== currentMessage) {
@@ -49,14 +47,13 @@ function App() {
   return (
     <div style={{ padding: '40px', maxWidth: '600px', margin: '0 auto', fontFamily: 'sans-serif', color: '#333' }}>
       <header style={{ textAlign: 'center', marginBottom: '40px', padding: '20px', backgroundColor: '#e4abc7', borderRadius: '12px' }}>
-        <User size={48} style={{ marginBottom: '10px' }} />
         <h1>My Personal Profile and GuestBook</h1>
         <p>WEBPROG React, Nest.js supabase app Individual </p>
       </header>
 
       <main style={{ border: '1px solid #cf22b8', padding: '25px', borderRadius: '15px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
         <h2 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <MessageSquare size={24} /> Guestbook Message
+         Guestbook Message
         </h2>
         
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '20px' }}>
