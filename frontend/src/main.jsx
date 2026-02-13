@@ -1,10 +1,10 @@
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  
- 
-  app.enableCors(); 
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.jsx'
+import './index.css'
 
-
-  await app.listen(3000); 
-}
-bootstrap();
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)

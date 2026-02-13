@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { guestbookApi } from './api';
-import { Trash2, Edit3, Send } from 'lucide-react';
+import { Trash2, Edit3, Send, User, MessageSquare } from 'lucide-react'; // Added Edit3
 
 function App() {
   const [entries, setEntries] = useState([]);
@@ -14,7 +14,7 @@ function App() {
   const fetchEntries = async () => {
     try {
       const res = await guestbookApi.getAll();
-      setEntries(res.data);
+      setEntries(res.data || []);
     } catch (err) {
       console.error("Failed to fetch", err);
     } finally {
@@ -37,43 +37,63 @@ function App() {
     }
   };
 
+  // Logic to update an existing message
+  const handleUpdate = async (id, currentMessage) => {
+    const newMessage = prompt("Edit your message:", currentMessage);
+    if (newMessage && newMessage !== currentMessage) {
+      await guestbookApi.update(id, { message: newMessage });
+      fetchEntries();
+    }
+  };
+
   return (
-    <div style={{ padding: '40px', maxWidth: '600px', margin: '0 auto', fontFamily: 'sans-serif' }}>
-      <header style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <h1>My Personal Profile</h1>
-        <p>Full Stack Project: NestJS + React + Supabase</p>
+    <div style={{ padding: '40px', maxWidth: '600px', margin: '0 auto', fontFamily: 'sans-serif', color: '#333' }}>
+      <header style={{ textAlign: 'center', marginBottom: '40px', padding: '20px', backgroundColor: '#e4abc7', borderRadius: '12px' }}>
+        <User size={48} style={{ marginBottom: '10px' }} />
+        <h1>My Personal Profile and GuestBook</h1>
+        <p>WEBPROG React, Nest.js supabase app Individual </p>
       </header>
 
-      <main id="guestbook" style={{ border: '1px solid #ddd', padding: '20px', borderRadius: '10px' }}>
-        <h2>Guestbook</h2>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <main style={{ border: '1px solid #cf22b8', padding: '25px', borderRadius: '15px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
+        <h2 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <MessageSquare size={24} /> Guestbook Message
+        </h2>
+        
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '20px' }}>
           <input
-            placeholder="Your Name"
+            placeholder="Please Input Your Name"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            style={{ padding: '10px' }}
+            style={{ padding: '12px', borderRadius: '6px', border: '1px solid #cf22b8' }}
           />
           <textarea
-            placeholder="Leave a message..."
+            placeholder="Please Leave a message..."
             value={form.message}
             onChange={(e) => setForm({ ...form, message: e.target.value })}
-            style={{ padding: '10px', minHeight: '80px' }}
+            style={{ padding: '12px', borderRadius: '6px', border: '1px solid #cf22b8', minHeight: '100px' }}
           />
-          <button type="submit" style={{ padding: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+          <button type="submit" style={{ padding: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', backgroundColor: '#f7b0d7', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 'bold' }}>
             <Send size={18} /> Post Message
           </button>
         </form>
 
-        <div style={{ marginTop: '30px' }}>
+        <div style={{ marginTop: '40px' }}>
+          <h3>Recent Messages</h3>
           {loading ? <p>Loading messages...</p> : entries.map((entry) => (
-            <div key={entry.id} style={{ borderBottom: '1px solid #eee', padding: '10px 0', display: 'flex', justifyContent: 'space-between' }}>
+            <div key={entry.id} style={{ borderBottom: '1px solid #cf22b8', padding: '15px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
-                <strong>{entry.name}</strong>
-                <p>{entry.message}</p>
+                <strong style={{ fontSize: '1.1rem' }}>{entry.name}</strong>
+                <p style={{ margin: '5px 0', color: '#555' }}>{entry.message}</p>
+                <small style={{ color: '#e79ac7' }}>{new Date(entry.created_at).toLocaleDateString()}</small>
               </div>
-              <button onClick={() => handleDelete(entry.id)} style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer' }}>
-                <Trash2 size={18} />
-              </button>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button onClick={() => handleUpdate(entry.id, entry.message)} style={{ color: '#cf22b8', border: 'none', background: 'none', cursor: 'pointer', padding: '5px' }}>
+                  <Edit3 size={20} />
+                </button>
+                <button onClick={() => handleDelete(entry.id)} style={{ color: '#e29bcd', border: 'none', background: 'none', cursor: 'pointer', padding: '5px' }}>
+                  <Trash2 size={20} />
+                </button>
+              </div>
             </div>
           ))}
         </div>
